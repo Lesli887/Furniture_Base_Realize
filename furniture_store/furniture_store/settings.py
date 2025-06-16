@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACK = 'bootstrap5'
 
-STRIPE_SECRET_KEY = 'sk_test_51RYyX5DGKCeV66EinLYxwIFfmj04ql2Ulma3ApsjmOpPD6juNe3okDh11D29u3lO2oaAvSQXYOF0xRb1gcA1RsIC00pmMe3auv'  # Замените на реальный ключ
+
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51RYyX5DGKCeV66Ei4A6uY4ESL94zoqmwUT0C2fcJa1zxr74NqQHUFBUyIyh8xYSA8g5dQUe0JS3HWxT1LYAgDE5Y00szQe8WgE'  # Замените на реальный ключ
 STRIPE_CURRENCY = 'rub'  # Валюта: российский рубль
 
