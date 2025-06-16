@@ -8,111 +8,160 @@
 {% endblock %}
 
 {% block content %}
-<section class="order-create-section">
-    <div class="container">
-        <div class="order-header">
-            <h1 class="order-title">Оформление заказа</h1>
-            <div class="order-steps">
-                <div class="step">Корзина</div>
-                <div class="step active">Оформление</div>
-                <div class="step">Оплата</div>
-            </div>
-        </div>
-
-        <div class="order-container">
-            <div class="order-form">
-                <h2 class="form-title">Контактная информация</h2>
-                <form method="post" id="order-form">
-                    {% csrf_token %}
-
-                    <div class="form-group">
-                        <label for="{{ form.email.id_for_label }}">Email *</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="error">{{ form.email.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ form.phone.id_for_label }}">Телефон *</label>
-                        {{ form.phone }}
-                        {% if form.phone.errors %}
-                            <div class="error">{{ form.phone.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ form.address.id_for_label }}">Адрес доставки *</label>
-                        {{ form.address }}
-                        {% if form.address.errors %}
-                            <div class="error">{{ form.address.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="{{ form.comment.id_for_label }}">Комментарий к заказу</label>
-                        {{ form.comment }}
-                    </div>
-
-                    <div class="form-actions">
-                        <a href="{% url 'cart:cart_view' %}" class="btn btn-outline">Назад в корзину</a>
-                        <button type="submit" class="btn btn-secondary">Перейти к оплате</button>
-                    </div>
-                </form>
+    <section class="order-create-section">
+        <div class="container">
+            <div class="order-header">
+                <h1 class="order-title">Оформление заказа</h1>
+                <div class="order-steps">
+                    <div class="step">Корзина</div>
+                    <div class="step active">Оформление</div>
+                    <div class="step">Оплата</div>
+                </div>
             </div>
 
-            <div class="order-summary">
-                <div class="summary-card">
-                    <h3 class="summary-title">Ваш заказ</h3>
+            <div class="order-container">
+                <div class="order-form">
+                    <h2 class="form-title">Контактная информация</h2>
+                    <form method="post" id="order-form">
+                        {% csrf_token %}
 
-                    <div class="order-items">
-                        {% for item in cart.items.all %}
-                            <div class="order-item">
-                                <div class="item-image">
-                                    {% if item.variant.product.main_image %}
-                                        <img src="{{ item.variant.product.main_image.url }}" alt="{{ item.variant.product.name }}">
-                                    {% else %}
-                                        <div class="image-placeholder">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
-                                            </svg>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="item-details">
-                                    <div class="item-name">{{ item.variant.product.name }}</div>
-                                    <div class="item-variant">
-                                        {% if item.variant.color %}<span>Цвет: {{ item.variant.color.name }}</span>{% endif %}
-                                        {% if item.variant.size %}<span>Размер: {{ item.variant.size }}</span>{% endif %}
+                        <div class="form-group">
+                            <label for="{{ form.email.id_for_label }}">Email *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="error">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.phone.id_for_label }}">Телефон *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="error">{{ form.phone.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.address.id_for_label }}">Адрес доставки *</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="error">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.comment.id_for_label }}">Комментарий к заказу</label>
+                            {{ form.comment }}
+                        </div>
+
+                        <!-- Новый блок: Выбор способа оплаты -->
+                        <div class="form-group payment-methods">
+                            <label>Способ оплаты *</label>
+                            <div class="payment-options">
+                                {% for choice in form.payment_method %}
+                                    <div class="payment-option">
+                                        {{ choice.tag }}
+                                        <label for="{{ choice.id_for_label }}">
+                                            <span class="radio-custom"></span>
+                                            {{ choice.choice_label }}
+                                        </label>
                                     </div>
-                                    <div class="item-quantity">Количество: {{ item.quantity }}</div>
-                                </div>
-                                <div class="item-price">{{ item.total_price }} ₽</div>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
+                            {% if form.payment_method.errors %}
+                                <div class="error">{{ form.payment_method.errors }}</div>
+                            {% endif %}
+                        </div>
 
-                    <div class="summary-totals">
-                        <div class="summary-row">
-                            <span>Товары ({{ cart.total_quantity }})</span>
-                            <span>{{ cart.total_price }} ₽</span>
+                        <div class="form-actions">
+                            <a href="{% url 'cart:cart_view' %}" class="btn btn-outline">Назад в корзину</a>
+                            <button type="submit" class="btn btn-secondary" id="submit-button">
+                                Перейти к оплате
+                            </button>
                         </div>
-                        <div class="summary-row">
-                            <span>Доставка</span>
-                            <span>0 ₽</span>
+                    </form>
+                </div>
+
+                <div class="order-summary">
+                    <div class="summary-card">
+                        <h3 class="summary-title">Ваш заказ</h3>
+
+                        <div class="order-items">
+                            {% for item in cart.items.all %}
+                                <div class="order-item">
+                                    <div class="item-image">
+                                        {% if item.variant.product.main_image %}
+                                            <img src="{{ item.variant.product.main_image.url }}"
+                                                 alt="{{ item.variant.product.name }}">
+                                        {% else %}
+                                            <div class="image-placeholder">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                     fill="currentColor">
+                                                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                                                </svg>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="item-details">
+                                        <div class="item-name">{{ item.variant.product.name }}</div>
+                                        <div class="item-variant">
+                                            {% if item.variant.color %}
+                                                <span>Цвет: {{ item.variant.color.name }}</span>{% endif %}
+                                            {% if item.variant.size %}
+                                                <span>Размер: {{ item.variant.size }}</span>{% endif %}
+                                        </div>
+                                        <div class="item-quantity">Количество: {{ item.quantity }}</div>
+                                    </div>
+                                    <div class="item-price">{{ item.total_price }} ₽</div>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <div class="summary-total">
-                            <span>Итого к оплате</span>
-                            <span>{{ cart.total_price }} ₽</span>
+
+                        <div class="summary-totals">
+                            <div class="summary-row">
+                                <span>Товары ({{ cart.total_quantity }})</span>
+                                <span>{{ cart.total_price }} ₽</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Доставка</span>
+                                <span>0 ₽</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Итого к оплате</span>
+                                <span>{{ cart.total_price }} ₽</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://js.stripe.com/v3/"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Обновляем текст кнопки в зависимости от выбранного способа оплаты
+            const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+            const submitButton = document.getElementById('submit-button');
+
+            function updateButtonText() {
+                const selectedPayment = document.querySelector('input[name="payment_method"]:checked').value;
+                if (selectedPayment === 'upon_receipt') {
+                    submitButton.textContent = 'Завершить оформление';
+                } else {
+                    submitButton.textContent = 'Перейти к оплате';
+                }
+            }
+
+            // Инициализация при загрузке
+            updateButtonText();
+
+            // Обновление при изменении выбора
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', updateButtonText);
+            });
+        });
+    </script>
 {% endblock %}

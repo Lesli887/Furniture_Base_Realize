@@ -46,7 +46,7 @@
                             </span>
                             </div>
                             <div class="cell-method"> <!-- Новая ячейка -->
-                                {% if order.stripe_id %}Онлайн{% else %}Наложенный{% endif %}
+                                {% if order.stripe_id %}Онлайн{% else %}При получении{% endif %}
                             </div>
                             <div class="cell-total">
                                 {{ order.total }} ₽

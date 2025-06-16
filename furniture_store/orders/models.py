@@ -20,6 +20,12 @@ class Order(models.Model):
         ('refunded', 'Возврат'),
     ]
 
+    # Новое поле: выбор способа оплаты
+    PAYMENT_METHOD_CHOICES = [
+        ('online', 'Оплата онлайн'),
+        ('upon_receipt', 'Оплата при получении'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', verbose_name='Пользователь')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name='Статус')
@@ -28,6 +34,13 @@ class Order(models.Model):
         choices=PAYMENT_STATUS_CHOICES,
         default='pending',
         verbose_name='Статус оплаты'
+    )
+    # Новое поле для хранения способа оплаты
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        default='online',
+        verbose_name='Способ оплаты'
     )
     total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Итоговая сумма')
     address = models.TextField(verbose_name='Адрес доставки')
@@ -57,11 +70,18 @@ class Order(models.Model):
 
     @property
     def is_paid(self):
+        # Для оплаты при получении считаем заказ "условно оплаченным"
+        if self.payment_method == 'upon_receipt':
+            return self.payment_status in ['paid', 'pending']
         return self.payment_status == 'paid'
 
     def save(self, *args, **kwargs):
-        # Добавить логирование изменений статуса при необходимости
+        # Автоматически обновляем статус оплаты для "Оплаты при получении"
+        if self.payment_method == 'upon_receipt' and self.payment_status == 'pending':
+            # Можно добавить дополнительную логику обработки
+            pass
         super().save(*args, **kwargs)
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Заказ')

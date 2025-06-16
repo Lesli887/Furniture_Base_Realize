@@ -37,6 +37,14 @@ def order_create(request):
             order = form.save(commit=False)
             order.user = request.user
             order.total = sum(item.total_price for item in cart_items)
+            order.payment_method = form.cleaned_data['payment_method']  # Сохраняем выбранный способ оплаты
+
+            # Для оплаты при получении сразу ставим статус "ожидает оплаты"
+            if order.payment_method == 'upon_receipt':
+                order.payment_status = 'pending'
+            else:
+                order.payment_status = 'pending'  # Для онлайн-оплаты тоже pending до оплаты
+
             order.save()
 
             # Создаем позиции заказа
@@ -57,8 +65,12 @@ def order_create(request):
             # Очищаем корзину
             cart_items.delete()
 
-            # Перенаправляем на страницу оплаты
-            return redirect('orders:payment_init', order_id=order.id)
+            # Перенаправляем в зависимости от способа оплаты
+            if order.payment_method == 'online':
+                return redirect('orders:payment_init', order_id=order.id)
+            else:
+                # Для оплаты при получении сразу показываем страницу подтверждения
+                return redirect('orders:order_created_upon_receipt', order_id=order.id)
     else:
         form = OrderForm(initial={
             'email': request.user.email,
@@ -77,8 +89,13 @@ def order_create(request):
 def payment_init(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
+    # Проверяем, что выбран онлайн способ оплаты
+    if order.payment_method != 'online':
+        messages.error(request, 'Для этого заказа не предусмотрена онлайн оплата')
+        return redirect('orders:order_detail', order_id=order.id)
+
     success_url = request.build_absolute_uri(
-        reverse('orders:payment_success', args=[order.id])  # Добавить order_id
+        reverse('orders:payment_success', args=[order.id])
     )
     cancel_url = request.build_absolute_uri(
         reverse('orders:payment_cancel')
@@ -119,9 +136,24 @@ def payment_init(request, order_id):
 @login_required
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    order.payment_status = 'paid'
-    order.save()
-    messages.success(request, 'Оплата прошла успешно!')
+
+    # Проверяем, что оплата была онлайн
+    if order.payment_method == 'online':
+        order.payment_status = 'paid'
+        order.save()
+        messages.success(request, 'Оплата прошла успешно!')
+    else:
+        # Если это оплата при получении, просто показываем сообщение
+        messages.success(request, 'Заказ успешно оформлен! Оплата будет произведена при получении.')
+
+    return render(request, 'apps/orders/order_created.html', {'order': order})
+
+
+@login_required
+def order_created_upon_receipt(request, order_id):
+    """Страница подтверждения заказа с оплатой при получении"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    messages.success(request, 'Заказ успешно оформлен! Оплата будет произведена при получении.')
     return render(request, 'apps/orders/order_created.html', {'order': order})
 
 

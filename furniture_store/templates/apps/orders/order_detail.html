@@ -72,6 +72,18 @@
                             <div class="summary-value">{{ order.email }}</div>
                         </div>
 
+                        <div class="summary-item">
+                        <div class="summary-label"></div>
+                        <div class="summary-label"></div>
+                            {% if order.stripe_id and order.payment_status == 'pending' %}
+                                <div class="payment-action">
+                                    <a href="{% url 'orders:payment_init' order_id=order.id %}" class="btn btn-pay">
+                                        Оплатить заказ
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
                         {% if order.comment %}
                             <div class="summary-item">
                                 <div class="summary-label">Комментарий</div>
@@ -79,16 +91,6 @@
                             </div>
                         {% endif %}
                     </div>
-                    {% if order.stripe_id and order.payment_status == 'pending' %}
-                        <div class="payment-action">
-                            <a href="{% url 'orders:payment_init' order_id=order.id %}" class="btn btn-pay">
-                                Оплатить заказ
-                            </a>
-                            <p class="payment-note">
-                                Ссылка действительна в течение 24 часов
-                            </p>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
 
