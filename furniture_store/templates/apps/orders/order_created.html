@@ -8,54 +8,59 @@
 {% endblock %}
 
 {% block content %}
-<section class="order-created-section">
-    <div class="container">
-        <div class="order-confirmation">
-            <div class="confirmation-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-            </div>
+    <section class="order-created-section">
+        <div class="container">
+            <div class="order-confirmation">
+                <div style="display:none;">
+                    Status: {{ order.status }} | Payment: {{ order.payment_status }}
+                </div>
+                <div class="confirmation-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
 
-            <h1 class="confirmation-title">Ваш заказ успешно оформлен!</h1>
-            <p class="confirmation-text">
-                Благодарим за покупку! Ваш заказ <strong>№{{ order.id }}</strong> от
-                <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong> принят в обработку.
-            </p>
+                <h1 class="confirmation-title">Ваш заказ успешно оформлен!</h1>
+                <p class="confirmation-text">
+                    Благодарим за покупку! Ваш заказ <strong>№{{ order.id }}</strong> от
+                    <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong> принят в обработку.
+                </p>
 
-            <div class="confirmation-details">
-                <div class="detail-row">
-                    <span>Номер заказа:</span>
-                    <strong>{{ order.id }}</strong>
+                <div class="confirmation-details">
+                    <div class="detail-row">
+                        <span>Номер заказа:</span>
+                        <strong>{{ order.id }}</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Дата заказа:</span>
+                        <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Статус:</span>
+                        <strong>{{ order.get_status_display }}</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Итоговая сумма:</span>
+                        <strong>{{ order.total }} ₽</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Способ оплаты:</span>
+                        <strong>
+                            {% if order.stripe_id %}Онлайн (Stripe){% else %}При получении{% endif %}
+                        </strong>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <span>Дата заказа:</span>
-                    <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong>
-                </div>
-                <div class="detail-row">
-                    <span>Статус:</span>
-                    <strong>{{ order.get_status_display }}</strong>
-                </div>
-                <div class="detail-row">
-                    <span>Итоговая сумма:</span>
-                    <strong>{{ order.total }} ₽</strong>
-                </div>
-                <div class="detail-row">
-                    <span>Способ оплаты:</span>
-                    <strong>При получении</strong>
-                </div>
-            </div>
 
-            <p class="confirmation-info">
-                Информация о заказе отправлена на ваш email: <strong>{{ order.email }}</strong>.<br>
-                В ближайшее время с вами свяжется наш менеджер для подтверждения заказа.
-            </p>
+                <p class="confirmation-info">
+                    Информация о заказе отправлена на ваш email: <strong>{{ order.email }}</strong>.<br>
+                    В ближайшее время с вами свяжется наш менеджер для подтверждения заказа.
+                </p>
 
-            <div class="confirmation-actions">
-                <a href="{% url 'products:product_list' %}" class="btn btn-primary">Продолжить покупки</a>
-                <a href="{% url 'users:profile' %}" class="btn btn-outline">Мои заказы</a>
+                <div class="confirmation-actions">
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Продолжить покупки</a>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline">Мои заказы</a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}

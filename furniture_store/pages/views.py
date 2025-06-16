@@ -32,12 +32,12 @@ class HomePageView(TemplateView):
         # 4 популярные категории
         context['categories'] = Category.objects.annotate(
             product_count=Count('product')
-        ).order_by('-product_count')[:4]
+        ).order_by('-product_count')
 
         # 3 избранные коллекции
         context['featured_collections'] = Collection.objects.filter(
             is_featured=True
-        )[:3]
+        )
 
         # 4 популярных товара (по количеству заказов)
         context['popular_products'] = Product.objects.annotate(

@@ -59,6 +59,10 @@ class Order(models.Model):
     def is_paid(self):
         return self.payment_status == 'paid'
 
+    def save(self, *args, **kwargs):
+        # Добавить логирование изменений статуса при необходимости
+        super().save(*args, **kwargs)
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Заказ')
     variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, verbose_name='Вариант товара')

@@ -36,12 +36,15 @@
 }
 
 .header-order {
-    flex: 2;
+    flex: 1;
 }
 
 .header-date,
 .header-status,
-.header-total {
+.header-payment, /* Новая колонка */
+.header-total,
+.header-method
+{
     flex: 1;
 }
 
@@ -64,13 +67,15 @@
 .cell-order,
 .cell-date,
 .cell-status,
+.cell-payment, /* Новая ячейка */
 .cell-total,
-.cell-actions {
+.cell-actions,
+.cell-method{
     padding: 0 10px;
 }
 
 .cell-order {
-    flex: 2;
+    flex: 1;
 }
 
 .cell-date {
@@ -78,6 +83,14 @@
 }
 
 .cell-status {
+    flex: 1;
+}
+
+.cell-payment { /* Новая ячейка */
+    flex: 1;
+}
+
+.cell-method { /* Новая ячейка */
     flex: 1;
 }
 
@@ -110,6 +123,36 @@
     font-weight: 500;
 }
 
+/* Стили для статусов оплаты */
+.payment-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.payment-paid {
+    background: #e6f7ee;
+    color: #0f9d58;
+}
+
+.payment-pending {
+    background: #fff8e6;
+    color: #f57c00;
+}
+
+.payment-failed {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.payment-refunded {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+/* Существующие стили статусов */
 .status-pending {
     background: #fff3cd;
     color: #856404;
@@ -172,7 +215,7 @@
     margin-bottom: 25px;
 }
 
-/* Responsive adjustments */
+/* Адаптивные стили */
 @media (max-width: 992px) {
     .table-header {
         display: none;
@@ -199,9 +242,14 @@
         order: 3;
     }
 
-    .cell-total {
+    .cell-payment { /* Новая ячейка в адаптивном режиме */
         flex: 1;
         order: 4;
+    }
+
+    .cell-total {
+        flex: 1;
+        order: 5;
         text-align: right;
     }
 
@@ -228,6 +276,7 @@
 
     .cell-date,
     .cell-status,
+    .cell-payment, /* Новая ячейка в мобильном режиме */
     .cell-total {
         flex: 0 0 100%;
         text-align: left;

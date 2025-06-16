@@ -78,7 +78,7 @@ def payment_init(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
     success_url = request.build_absolute_uri(
-        reverse('orders:payment_success')
+        reverse('orders:payment_success', args=[order.id])  # Добавить order_id
     )
     cancel_url = request.build_absolute_uri(
         reverse('orders:payment_cancel')
@@ -117,15 +117,12 @@ def payment_init(request, order_id):
 
 
 @login_required
-def payment_success(request):
-    # Получаем последний заказ пользователя
-    order = Order.objects.filter(user=request.user).last()
-    if order:
-        order.payment_status = 'paid'
-        order.save()
-        messages.success(request, 'Оплата прошла успешно!')
-        return render(request, 'apps/orders/order_created.html', {'order': order})
-    return redirect('products:product_list')
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order.payment_status = 'paid'
+    order.save()
+    messages.success(request, 'Оплата прошла успешно!')
+    return render(request, 'apps/orders/order_created.html', {'order': order})
 
 
 @login_required

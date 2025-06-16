@@ -8,57 +8,67 @@
 {% endblock %}
 
 {% block content %}
-<section class="order-list-section">
-    <div class="container">
-        <div class="section-header">
-            <h1 class="section-title">Мои заказы</h1>
-            <div class="section-subtitle">История ваших покупок</div>
-        </div>
+    <section class="order-list-section">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Мои заказы</h1>
+                <div class="section-subtitle">История ваших покупок</div>
+            </div>
 
-        {% if orders %}
-            <div class="orders-table">
-                <div class="table-header">
-                    <div class="header-order">Заказ</div>
-                    <div class="header-date">Дата</div>
-                    <div class="header-status">Статус</div>
-                    <div class="header-total">Сумма</div>
-                    <div class="header-actions"></div>
-                </div>
-
-                {% for order in orders %}
-                    <div class="order-row">
-                        <div class="cell-order">
-                            <a href="{% url 'orders:order_detail' order.id %}" class="order-link">
-                                Заказ №{{ order.id }}
-                            </a>
-                        </div>
-                        <div class="cell-date">
-                            {{ order.created_at|date:"d.m.Y" }}
-                        </div>
-                        <div class="cell-status">
-                            <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
-                        </div>
-                        <div class="cell-total">
-                            {{ order.total }} ₽
-                        </div>
-                        <div class="cell-actions">
-                            <a href="{% url 'orders:order_detail' order.id %}" class="btn-details">Детали</a>
-                        </div>
+            {% if orders %}
+                <div class="orders-table">
+                    <div class="table-header">
+                        <div class="header-order">Заказ</div>
+                        <div class="header-date">Дата</div>
+                        <div class="header-status">Статус</div>
+                        <div class="header-payment">Оплата</div>
+                        <div class="header-method">Способ</div><!-- Новая колонка -->
+                        <div class="header-total">Сумма</div>
+                        <div class="header-actions"></div>
                     </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-orders">
-                <div class="empty-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
-                    </svg>
+
+                    {% for order in orders %}
+                        <div class="order-row">
+                            <div class="cell-order">
+                                <a href="{% url 'orders:order_detail' order.id %}" class="order-link">
+                                    Заказ №{{ order.id }}
+                                </a>
+                            </div>
+                            <div class="cell-date">
+                                {{ order.created_at|date:"d.m.Y" }}
+                            </div>
+                            <div class="cell-status">
+                                <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                            </div>
+                            <div class="cell-payment"> <!-- Новая ячейка -->
+                                <span class="payment-badge payment-{{ order.payment_status }}">
+                                {{ order.get_payment_status_display }}
+                            </span>
+                            </div>
+                            <div class="cell-method"> <!-- Новая ячейка -->
+                                {% if order.stripe_id %}Онлайн{% else %}Наложенный{% endif %}
+                            </div>
+                            <div class="cell-total">
+                                {{ order.total }} ₽
+                            </div>
+                            <div class="cell-actions">
+                                <a href="{% url 'orders:order_detail' order.id %}" class="btn-details">Детали</a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <h3>У вас еще нет заказов</h3>
-                <p>Начните покупки, чтобы увидеть здесь свои заказы</p>
-                <a href="{% url 'products:product_list' %}" class="btn btn-primary">Перейти к покупкам</a>
-            </div>
-        {% endif %}
-    </div>
-</section>
+            {% else %}
+                <div class="empty-orders">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                        </svg>
+                    </div>
+                    <h3>У вас еще нет заказов</h3>
+                    <p>Начните покупки, чтобы увидеть здесь свои заказы</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Перейти к покупкам</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

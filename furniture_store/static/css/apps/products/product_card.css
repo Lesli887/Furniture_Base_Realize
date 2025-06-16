@@ -29,8 +29,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Изменено с cover на contain */
     transition: var(--transition);
+    background: white; /* Добавлен белый фон для прозрачных изображений */
 }
 
 .product-card__image:hover {

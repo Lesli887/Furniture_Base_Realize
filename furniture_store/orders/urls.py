@@ -10,6 +10,6 @@ urlpatterns = [
 
     # Новые URL для Stripe
     path('payment/<int:order_id>/', views.payment_init, name='payment_init'),
-    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
 ]
