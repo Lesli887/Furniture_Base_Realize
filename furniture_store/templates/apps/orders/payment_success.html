@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оплата прошла успешно | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/orders/order_created.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="order-created-section">
+    <div class="container">
+        <div class="order-confirmation">
+            <div class="confirmation-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+
+            <h1 class="confirmation-title">Оплата прошла успешно!</h1>
+            <p class="confirmation-text">
+                Благодарим за покупку! Ваш заказ <strong>№{{ order.id }}</strong> от
+                <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong> успешно оплачен.
+            </p>
+
+            <div class="confirmation-details">
+                <div class="detail-row">
+                    <span>Номер заказа:</span>
+                    <strong>{{ order.id }}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Дата оплаты:</span>
+                    <strong>{% now "d.m.Y H:i" %}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Сумма оплаты:</span>
+                    <strong>{{ order.total }} ₽</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Способ оплаты:</span>
+                    <strong>Банковская карта (Stripe)</strong>
+                </div>
+            </div>
+
+            <p class="confirmation-info">
+                Чек отправлен на ваш email: <strong>{{ order.email }}</strong>.<br>
+                Мы свяжемся с вами для уточнения деталей доставки.
+            </p>
+
+            <div class="confirmation-actions">
+                <a href="{% url 'products:product_list' %}" class="btn btn-primary">Продолжить покупки</a>
+                <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline">Детали заказа</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

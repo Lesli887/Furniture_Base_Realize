@@ -1,0 +1,165 @@
+<footer class="footer">
+    <div class="container">
+        <div class="footer__sections">
+            <!-- О магазине -->
+            <div class="footer__section">
+                <h3 class="footer__title">Мебельный магазин</h3>
+                <div class="footer__logo">FurniStore</div>
+                <p class="footer__description">
+                    Современная мебель для дома и офиса. Качественные товары по доступным ценам с доставкой по всей России.
+                </p>
+                <div class="footer__social">
+                    <a href="#" class="social-link" aria-label="ВКонтакте">
+                        <svg width="24" height="24" fill="currentColor">
+                            <path d="M19.915 13.028c-.388-.49-.277-.708 0-1.146.005-.005 3.208-4.431 3.538-5.932l.002-.001c.164-.547 0-.949-.793-.949h-2.624c-.668 0-.976.345-1.141.731 0 0-1.336 3.198-3.226 5.271-.61.599-.89.791-1.225.791-.164 0-.404-.192-.404-.739V5.949c0-.656-.215-.949-.734-.949H9.16c-.412 0-.658.306-.658.591 0 .622.945.765 1.043 2.515v3.797c0 .832-.151.985-.486.985-.892 0-3.057-3.211-4.34-6.886-.259-.713-.512-1.001-1.185-1.001H1.5c-.749 0-.9.345-.9.731 0 .682.892 4.073 4.148 8.553 2.17 3.058 5.226 4.715 8.006 4.715 1.671 0 1.875-.368 1.875-1.001 0-2.922-.151-3.198.686-3.198.388 0 1.056.192 2.616 1.667C18.453 16.639 18.714 17 19.67 17h2.624c.748 0 1.127-.368.909-1.094-.499-1.527-3.871-4.668-4.023-4.878z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Telegram">
+                        <svg width="24" height="24" fill="currentColor">
+                            <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" aria-label="Instagram">
+                        <svg width="24" height="24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Категории -->
+            <div class="footer__section">
+                <h3 class="footer__title">Категории</h3>
+                <ul class="footer__list">
+                    {% for category in categories|slice:":5" %}
+                    <li class="footer__item">
+                        <a href="{% url 'products:category_detail' category.slug %}" class="footer__link">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Диваны</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Кресла</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Столы</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Стулья</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Шкафы</a>
+                    </li>
+                    {% endfor %}
+                    <li class="footer__item">
+                        <a href="{% url 'products:product_list' %}" class="footer__link footer__link--all">
+                            Все категории →
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Коллекции -->
+            <div class="footer__section">
+                <h3 class="footer__title">Коллекции</h3>
+                <ul class="footer__list">
+                    {% for collection in featured_collections|slice:":5" %}
+                    <li class="footer__item">
+                        <a href="{% url 'products:collection_detail' collection.slug %}" class="footer__link">
+                            {{ collection.name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Классика</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Модерн</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Лофт</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Минимализм</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="#" class="footer__link">Скандинавский стиль</a>
+                    </li>
+                    {% endfor %}
+                    <li class="footer__item">
+                        <a href="{% url 'products:collection_list' %}" class="footer__link footer__link--all">
+                            Все коллекции →
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Полезные ссылки -->
+            <div class="footer__section">
+                <h3 class="footer__title">Полезное</h3>
+                <ul class="footer__list">
+                    <li class="footer__item">
+                        <a href="{% url 'blog:post_list' %}" class="footer__link">Блог</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="{% url 'pages:static_page' 'delivery' %}" class="footer__link">Доставка и оплата</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="{% url 'pages:static_page' 'guarantee' %}" class="footer__link">Гарантия</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="{% url 'pages:static_page' 'assembly' %}" class="footer__link">Сборка мебели</a>
+                    </li>
+                    <li class="footer__item">
+                        <a href="{% url 'pages:static_page' 'contacts' %}" class="footer__link">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Контакты -->
+            <div class="footer__section">
+                <h3 class="footer__title">Контакты</h3>
+                <ul class="footer__contacts">
+                    <li class="contact-item">
+                        <svg width="20" height="20" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+                        </svg>
+                        <span>г. Москва, ул. Мебельная, 15</span>
+                    </li>
+                    <li class="contact-item">
+                        <svg width="20" height="20" fill="currentColor">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <a href="mailto:info@furnistore.ru">info@furnistore.ru</a>
+                    </li>
+                    <li class="contact-item">
+                        <svg width="20" height="20" fill="currentColor">
+                            <path d="M19.23 15.26l-2.54-.29c-.61-.07-1.21.14-1.64.47l-1.84 1.84c-2.83-1.44-5.15-3.75-6.59-6.59l1.85-1.85c.32-.43.54-1.03.47-1.64l-.29-2.52c-.12-1.01-.97-1.77-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07.53 8.54 7.36 15.36 15.89 15.89 1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98z"/>
+                        </svg>
+                        <a href="tel:+74951234567">+7 (495) 123-45-67</a>
+                    </li>
+                    <li class="contact-item">
+                        <svg width="20" height="20" fill="currentColor">
+                            <path d="M20 9V6c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v3c-1.1 0-2 .9-2 2v5c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-5c0-1.1-.9-2-2-2zm-7-3h5v3h-5V6zM6 6h5v3H6V6zm14 12H4v-3h3v1h2v-1h6v1h2v-1h3v3z"/>
+                        </svg>
+                        <span>Пн-Пт: 9:00-21:00<br>Сб-Вс: 10:00-20:00</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Нижняя часть футера -->
+        <div class="footer__bottom">
+            <div class="footer__copyright">
+                &copy; {% now "Y" %} Мебельный магазин FurniStore. Все права защищены.
+            </div>
+            <div class="footer__links">
+                <a href="#" class="footer__link">Политика конфиденциальности</a>
+                <a href="#" class="footer__link">Пользовательское соглашение</a>
+            </div>
+        </div>
+    </div>
+</footer>

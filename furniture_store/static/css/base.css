@@ -1,0 +1,110 @@
+/* ===== VARIABLES ===== */
+:root {
+    /* Цвета */
+    --primary-color: #2c3e50;
+    --secondary-color: #e67e22;
+    --accent-color: #3498db;
+    --light-color: #ecf0f1;
+    --dark-color: #34495e;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --gray-color: #95a5a6;
+    --light-gray: #f8f9fa;
+    --border-color: #ddd;
+
+    /* Тени */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+    /* Размеры */
+    --header-height: 80px;
+    --footer-height: 60px;
+    --container-width: 1200px;
+    --border-radius: 4px;
+
+    /* Переходы */
+    --transition: all 0.3s ease;
+}
+
+/* ===== BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+ul {
+    list-style: none;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Сообщения */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    position: relative;
+    cursor: pointer;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}

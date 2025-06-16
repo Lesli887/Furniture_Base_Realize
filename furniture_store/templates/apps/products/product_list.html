@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load product_tags %}
+{% load static %}
+
+{% block title %}Каталог товаров | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/products/product_list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/apps/products/product_card.css' %}">
+{% endblock %}
+
+{% block page_js %}
+    <script src="{% static 'js/apps/products/product_list.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<section class="product-list-section">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">Каталог товаров</h1>
+            <div class="section-subtitle">Мебель для дома и офиса</div>
+        </div>
+
+        <form id="filter-form" method="GET" action="{% url 'products:product_list' %}">
+            <div class="product-filters">
+                <div class="filter-group">
+                    <label for="category-filter">Категория:</label>
+                    <select id="category-filter" name="category" class="form-select">
+                        <option value="all">Все категории</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}"
+                                    {% if current_category == category.slug %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="collection-filter">Коллекция:</label>
+                    <select id="collection-filter" name="collection" class="form-select">
+                        <option value="all">Все коллекции</option>
+                        {% for collection in collections %}
+                            <option value="{{ collection.slug }}"
+                                    {% if current_collection == collection.slug %}selected{% endif %}>
+                                {{ collection.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sort-by">Сортировать:</label>
+                    <select id="sort-by" name="sort" class="form-select">
+                        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Сначала новые</option>
+                        <option value="price-low" {% if current_sort == 'price-low' %}selected{% endif %}>Цена по возрастанию</option>
+                        <option value="price-high" {% if current_sort == 'price-high' %}selected{% endif %}>Цена по убыванию</option>
+                        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Популярные</option>
+                        <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>По рейтингу</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="stock-filter">Наличие:</label>
+                    <select id="stock-filter" name="stock" class="form-select">
+                        <option value="all">Все товары</option>
+                        <option value="in-stock" {% if current_stock == 'in-stock' %}selected{% endif %}>Только в наличии</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="display:none;">Применить</button>
+            </div>
+        </form>
+
+        {% if products %}
+            <div class="product-grid" id="product-grid">
+                {% for product in products %}
+                    <div class="product-grid__item">
+                        {% include "apps/products/product_card.html" %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?{% modify_query page=1 %}" class="pagination-link first">Первая</a>
+                        <a href="?{% modify_query page=page_obj.previous_page_number %}" class="pagination-link prev">Назад</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="pagination-link current">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?{% modify_query page=num %}" class="pagination-link">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?{% modify_query page=page_obj.next_page_number %}" class="pagination-link next">Вперед</a>
+                        <a href="?{% modify_query page=page_obj.paginator.num_pages %}" class="pagination-link last">Последняя</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-products">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                    </svg>
+                </div>
+                <h3>Товары не найдены</h3>
+                <p>Попробуйте изменить параметры фильтрации</p>
+                <a href="{% url 'products:product_list' %}" class="btn btn-outline">Сбросить фильтры</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

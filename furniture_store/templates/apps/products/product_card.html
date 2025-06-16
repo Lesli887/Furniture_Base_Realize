@@ -1,0 +1,104 @@
+<div class="product-card">
+    <a href="{% url 'products:product_detail' product.slug %}" class="product-card__image-link"
+       aria-label="{{ product.name }}">
+        {% if product.main_image %}
+            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-card__image" loading="lazy">
+        {% else %}
+            <div class="product-card__image-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                </svg>
+            </div>
+        {% endif %}
+
+        {% if product.variants.all %}
+            <div class="product-badges">
+                {% with variant_count=product.variants.count %}
+                    {% if variant_count > 1 %}
+                        <span class="product-badge variants-badge" aria-label="Доступно {{ variant_count }} вариантов">
+                            {{ variant_count }} варианта
+                        </span>
+                    {% endif %}
+                {% endwith %}
+
+                {# Обновленная логика отображения наличия #}
+                {% if product.has_stock == 'out' %}
+                    <span class="product-badge out-of-stock-badge">Нет в наличии</span>
+                {% elif product.has_stock == 'partial' %}
+                    <span class="product-badge partial-stock-badge">Есть в других вариантах</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </a>
+
+    <div class="product-card__body">
+        <div class="product-card__category">{{ product.category.name }}</div>
+
+        <h3 class="product-card__title">
+            <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+        </h3>
+
+        {% if product.variants.all %}
+            <div class="product-card__colors">
+                {% for variant in product.variants.all|slice:":5" %}
+                    {% if variant.color %}
+                        <div class="color-dot"
+                             style="background-color: {{ variant.color.hex_code }};"
+                             aria-label="Цвет: {{ variant.color.name }}"
+                             data-tooltip="{{ variant.color.name }}"></div>
+                    {% endif %}
+                {% endfor %}
+
+                {% if product.variants.count > 5 %}
+                    <div class="color-more">+{{ product.variants.count|add:"-5" }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="product-card__price-container">
+            <div class="product-card__price">
+                {% if product.variants.first.price_modifier %}
+                    <span class="product-card__price-note">от</span>
+                {% endif %}
+
+                {% if product.variants.first %}
+                    {{ product.variants.first.price }} ₽
+                {% else %}
+                    {{ product.base_price }} ₽
+                {% endif %}
+
+
+            </div>
+
+            {% if product.average_rating %}
+                <div class="product-card__rating">
+                    <svg class="star filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                    <span>{{ product.average_rating|floatformat:1 }}</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="product-card__actions">
+            <button class="btn btn-secondary btn-add-to-cart"
+                    data-variant-id="{{ product.variants.first.id }}"
+                    {% if not product.variants.first or product.variants.first.stock == 0 %}disabled{% endif %}
+                    aria-label="Добавить в корзину">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                В корзину
+            </button>
+
+            <button class="btn-wishlist {% if user.is_authenticated and product in user.profile.favorites.all %}active{% endif %}"
+                    data-product-id="{{ product.id }}"
+                    aria-label="Добавить в избранное"
+                    data-wishlist-btn>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

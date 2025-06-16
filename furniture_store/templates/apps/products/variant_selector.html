@@ -1,0 +1,63 @@
+<div class="variant-selector">
+    {% if variants|length > 0 %}
+        <div class="variant-options-wrapper">
+            {% for variant in variants %}
+                <div class="variant-option {% if variant.is_default %}selected{% endif %}"
+                     data-variant-id="{{ variant.id }}"
+                     data-variant-sku="{{ variant.sku }}"
+                     data-variant-price="{{ variant.price }}"
+                     data-variant-stock="{{ variant.stock }}"
+                     data-variant-images="{% for image in variant.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                     role="button"
+                     aria-label="Выбрать вариант: {% if variant.color %}{{ variant.color.name }}{% endif %}{% if variant.size %}, размер {{ variant.size }}{% endif %}"
+                     tabindex="0">
+
+                    {% if variant.color %}
+                        <div class="color-swatch"
+                             style="background-color: {{ variant.color.hex_code }};"
+                             aria-label="Цвет: {{ variant.color.name }}"></div>
+                        <span class="variant-option-label">{{ variant.color.name }}</span>
+                    {% endif %}
+
+                    {% if variant.size %}
+                        <span class="variant-option-label">{{ variant.size }}</span>
+                    {% endif %}
+
+                    {% if variant.material %}
+                        <span class="variant-option-label">{{ variant.material }}</span>
+                    {% endif %}
+
+                    <div class="variant-option-meta">
+                        {% if variant.price_modifier != 0 %}
+                            <span class="price-modifier {% if variant.price_modifier > 0 %}positive{% else %}negative{% endif %}">
+                                {{ variant.price_modifier|floatformat:2 }} ₽
+                            </span>
+                        {% endif %}
+                        <span class="stock-indicator {% if variant.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                            {% if variant.stock > 0 %}
+                                {{ variant.stock }} шт.
+                            {% else %}
+                                Нет в наличии
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="variant-info" aria-live="polite">
+            <div class="selected-variant-info" id="selected-variant-info">
+                {% with default_variant=variants|first %}
+                    Выбран:
+                    {% if default_variant.color %}{{ default_variant.color.name }}{% endif %}
+                    {% if default_variant.size %}, {{ default_variant.size }}{% endif %}
+                    {% if default_variant.material %}, {{ default_variant.material }}{% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    {% else %}
+        <div class="no-variants-notice">
+            Нет доступных вариантов
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мой профиль | FurniStore{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/users/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-header">
+                <h1 class="profile-title">Мой профиль</h1>
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-outline edit-profile-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.69.3a1 1 0 0 0-1.41 0L4.22 7.38 3 12.62l5.24-1.22 7.08-7.08a1 1 0 0 0 0-1.41L12.69.3zM5.8 9.96l-1.5 1.5.35-3.21 4.36-4.36 1.5 1.5-4.71 4.57zM13.79 3.1l-1.5 1.5-1.5-1.5 1.5-1.5 1.5 1.5z"></path>
+                    </svg>
+                    Редактировать
+                </a>
+            </div>
+
+            <div class="profile-container">
+                <!-- Боковая панель профиля -->
+                <aside class="profile-sidebar">
+                    <div class="profile-avatar">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="Аватар {{ user.get_full_name }}">
+                        {% else %}
+                            <div class="avatar-placeholder">
+                                <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-info">
+                        <h2 class="profile-name">{{ user.get_full_name|default:"Не указано" }}</h2>
+                        <p class="profile-email">{{ user.email }}</p>
+
+                        <ul class="profile-details">
+                            {% if user.phone %}
+                                <li>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19.23 15.26l-2.54-.29c-.61-.07-1.21.14-1.64.47l-1.84 1.84c-2.83-1.44-5.15-3.75-6.59-6.59l1.85-1.85c.32-.43.54-1.03.47-1.64l-.29-2.52c-.12-1.01-.97-1.77-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07.53 8.54 7.36 15.36 15.89 15.89 1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98z"></path>
+                                    </svg>
+                                    <span>{{ user.phone }}</span>
+                                </li>
+                            {% endif %}
+
+                            {% if profile.birth_date %}
+                                <li>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H4V8h16v11zM4 6V5h16v1H4z"></path>
+                                    </svg>
+                                    <span>Дата рождения: {{ profile.birth_date }}</span>
+                                </li>
+                            {% endif %}
+
+                            <li>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 17c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1zm4-15H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V7h6v4z"></path>
+                                </svg>
+                                <span>Зарегистрирован: {{ user.date_joined|date:"d.m.Y" }}</span>
+                            </li>
+                        </ul>
+
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">{{ orders_count }}</span>
+                                <span class="stat-label">Заказов</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ favorites|length }}</span>
+                                <span class="stat-label">Избранных</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ reviews_count }}</span>
+                                <span class="stat-label">Отзывов</span>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'users:logout' %}" class="btn btn-logout">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17 7l-1.41-1.41L14 7.83V3c0-.55-.45-1-1-1s-1 .45-1 1v4.83l-1.59-1.24L9 7l4 4 4-4zM5 13h7c.55 0 1-.45 1-1s-.45-1-1-1H5c-.55 0-1 .45-1 1s.45 1 1 1zm0 3h7c.55 0 1-.45 1-1s-.45-1-1-1H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                            </svg>
+                            Выйти
+                        </a>
+                    </div>
+                </aside>
+
+                <!-- Основное содержимое профиля -->
+                <main class="profile-content">
+                    <!-- Вкладки профиля -->
+                    <div class="profile-tabs">
+                        <button class="tab-btn active" data-tab="favorites">Избранное</button>
+                        <button class="tab-btn" data-tab="orders">Мои заказы</button>
+                        <button class="tab-btn" data-tab="reviews">Мои отзывы</button>
+                    </div>
+
+                    <!-- Контент вкладок -->
+                    <div class="tab-content">
+                        <!-- Вкладка Избранное -->
+                        <div id="favorites" class="tab-pane active">
+                            {% if favorites %}
+                                <div class="favorites-grid">
+                                    {% for product in favorites %}
+                                        <div class="favorite-item">
+                                            <a href="{% url 'products:product_detail' product.slug %}" class="favorite-image">
+                                                {% if product.main_image %}
+                                                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                                                {% else %}
+                                                    <div class="product-placeholder">
+                                                        <svg width="60" height="60" viewBox="0 0 24 24"
+                                                             fill="currentColor">
+                                                            <path d="M21 16v-2c-1.1 0-2 .9-2 2h2zm-2 2v6c0 1.1.9 2 2 2h8v-2h-8v-6H5V6h14v2h2V6c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2v6zm12-8h2c0-1.1-.9-2-2-2h-2v2zm0 4h2v-2h-2v2zm-4-4h2v-2h-2v2zm4 0v2h2v-2h-2zm-4 8h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2zm4-8h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2z"></path>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                            </a>
+
+                                            <div class="favorite-details">
+                                                <a href="{% url 'products:product_detail' product.slug %}"
+                                                   class="favorite-name">{{ product.name }}</a>
+                                                <div class="favorite-price">{{ product.base_price }} ₽</div>
+
+                                                <div class="favorite-actions">
+                                                    <a href="{% url 'users:toggle_favorite' product.id %}"
+                                                       class="btn-remove">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24"
+                                                             fill="currentColor">
+                                                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 17.59 19 19 17.59 13.41 12z"></path>
+                                                        </svg>
+                                                        Удалить
+                                                    </a>
+
+                                                    {% if product.default_variant %}
+                                                        <a href="#"
+                                                           class="btn-add-to-cart"
+                                                           data-variant-id="{{ product.default_variant.id }}">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                 fill="currentColor">
+                                                                <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                                            </svg>
+                                                            В корзину
+                                                        </a>
+                                                    {% else %}
+                                                        <button class="btn-add-to-cart" disabled>
+                                                            <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                 fill="currentColor">
+                                                                <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                                            </svg>
+                                                            Нет в наличии
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="empty-favorites">
+                                    <div class="empty-icon">
+                                        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3>Ваш список избранного пуст</h3>
+                                    <p>Добавляйте товары в избранное, чтобы не потерять их</p>
+                                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Перейти в
+                                        каталог</a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Вкладка Заказы -->
+                        <div id="orders" class="tab-pane">
+                            {% if orders_count > 0 %}
+                                <div class="orders-list">
+                                    {% for order in user.orders.all|slice:":5" %}
+                                        <div class="order-item">
+                                            <div class="order-header">
+                                                <div class="order-number">Заказ #{{ order.id }}</div>
+                                                <div class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+                                                <div class="order-status {{ order.status }}">
+                                                    {{ order.get_status_display }}
+                                                </div>
+                                                <div class="order-total">{{ order.total }} ₽</div>
+                                            </div>
+
+                                            <div class="order-products">
+                                                {% for item in order.items.all|slice:":3" %}
+                                                    <div class="order-product">
+                                                        <div class="product-image">
+                                                            {% if item.product.main_image %}
+                                                                <img src="{{ item.product.main_image.url }}"
+                                                                     alt="{{ item.name }}">
+                                                            {% else %}
+                                                                <div class="product-placeholder">
+                                                                    <svg width="40" height="40" viewBox="0 0 24 24"
+                                                                         fill="currentColor">
+                                                                        <path d="M21 16v-2c-1.1 0-2 .9-2 2h2zm-2 2v6c0 1.1.9 2 2 2h8v-2h-8v-6H5V6h14v2h2V6c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2v6zm12-8h2c0-1.1-.9-2-2-2h-2v2zm0 4h2v-2h-2v2zm-4-4h2v-2h-2v2zm4 0v2h2v-2h-2zm-4 8h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2zm4-8h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2zm0 4h2v-2h-2v2z"></path>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="product-info">
+                                                            <div class="product-name">{{ item.name }}</div>
+                                                            <div class="product-variant">Артикул: {{ item.sku }}</div>
+                                                            <div class="product-quantity">{{ item.quantity }}
+                                                                × {{ item.price }} ₽
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+
+                                                {% if order.items.count > 3 %}
+                                                    <div class="more-products">
+                                                        +{{ order.items.count|add:"-3" }} других товаров
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="order-footer">
+                                                <a href="{% url 'orders:order_detail' order.id %}"
+                                                   class="btn btn-outline">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path>
+                                                    </svg>
+                                                    Подробнее о заказе
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    {% if orders_count > 5 %}
+                                        <div class="view-all-orders">
+                                            <a href="{% url 'orders:order_list' %}" class="btn btn-primary">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                                </svg>
+                                                Показать все заказы
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="empty-tab">
+                                    <div class="empty-icon">
+                                        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20 8h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v4H4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h4v4c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-4h4c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3>У вас пока нет заказов</h3>
+                                    <p>Когда вы сделаете заказ, он появится здесь</p>
+                                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                        </svg>
+                                        Перейти в каталог
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Вкладка Отзывы -->
+                        <div id="reviews" class="tab-pane">
+                            {% if reviews_count > 0 %}
+                                <div class="reviews-list">
+                                    {% for review in user.review_set.all|slice:":5" %}
+                                        <div class="review-item">
+                                            <div class="review-header">
+                                                <div class="review-product">
+                                                    <a href="{% url 'products:product_detail' review.product.slug %}">
+                                                        {{ review.product.name }}
+                                                    </a>
+                                                </div>
+                                                <div class="review-date">
+                                                    {{ review.created_at|date:"d.m.Y" }}
+                                                </div>
+                                                <div class="review-rating">
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= review.rating %}
+                                                            <svg width="16" height="16" viewBox="0 0 24 24"
+                                                                 fill="#f39c12">
+                                                                <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"></path>
+                                                            </svg>
+                                                        {% else %}
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#ddd">
+                                                                <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"></path>
+                                                            </svg>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="review-status {% if review.is_approved %}approved{% else %}pending{% endif %}">
+                                                    {% if review.is_approved %}Опубликован{% else %}На
+                                                        модерации{% endif %}
+                                                </div>
+                                            </div>
+
+                                            <div class="review-body">
+                                                <h4 class="review-title">{{ review.title }}</h4>
+                                                <p class="review-text">{{ review.text }}</p>
+                                            </div>
+
+                                            <div class="review-actions">
+                                                <a href="{% url 'product_reviews:edit_review' review.id %}"
+                                                   class="btn-edit">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M12.69.3a1 1 0 0 0-1.41 0L4.22 7.38 3 12.62l5.24-1.22 7.08-7.08a1 1 0 0 0 0-1.41L12.69.3zM5.8 9.96l-1.5 1.5.35-3.21 4.36-4.36 1.5 1.5-4.71 4.57zM13.79 3.1l-1.5 1.5-1.5-1.5 1.5-1.5 1.5 1.5z"></path>
+                                                    </svg>
+                                                    Редактировать
+                                                </a>
+                                                <a href="{% url 'product_reviews:delete_review' review.id %}"
+                                                   class="btn-remove">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 17.59 19 19 17.59 13.41 12z"></path>
+                                                    </svg>
+                                                    Удалить
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    {% if reviews_count > 5 %}
+                                        <div class="view-all-reviews">
+                                            <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                                </svg>
+                                                Показать все отзывы
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="empty-tab">
+                                    <div class="empty-icon">
+                                        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3>У вас пока нет отзывов</h3>
+                                    <p>Когда вы напишете отзыв, он появится здесь</p>
+                                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"></path>
+                                        </svg>
+                                        Перейти в каталог
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block page_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Переключение вкладок профиля
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Удаляем активный класс у всех кнопок и вкладок
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanes.forEach(p => p.classList.remove('active'));
+
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+
+                    // Показываем соответствующую вкладку
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Подтверждение удаления из избранного
+            const removeBtns = document.querySelectorAll('.btn-remove');
+            removeBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    if (!confirm('Удалить товар из избранного?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+        // Добавьте в конец скрипта
+        // Обработка добавления в корзину
+        const addToCartBtns = document.querySelectorAll('.btn-add-to-cart');
+        addToCartBtns.forEach(btn => {
+            btn.addEventListener('click', async function (e) {
+                e.preventDefault();
+
+                const variantId = this.dataset.variantId;
+                if (!variantId) return;
+
+                try {
+                    const response = await fetch(`/cart/add/${variantId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при добавлении в корзину');
+                }
+            });
+        });
+    </script>
+{% endblock %}

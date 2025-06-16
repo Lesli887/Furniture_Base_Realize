@@ -1,0 +1,70 @@
+<!-- apps/reviews/review_form.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ form_title }} | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/reviews/reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="review-form-section">
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+            <span> / </span>
+            <span>{{ form_title }}</span>
+        </div>
+
+        <div class="review-form-container">
+            <h1 class="form-title">{{ form_title }}</h1>
+
+            <form method="post" class="review-form">
+                {% csrf_token %}
+
+                <!-- Поле рейтинга со звездами -->
+                <div class="form-group">
+                    <label>Ваша оценка</label>
+                    <div class="rating-stars-select">
+                        {% for i in "54321" %}
+                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}"
+                                {% if form.rating.value == i %}checked{% endif %}>
+                            <label for="star{{ i }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.rating.errors %}
+                        <div class="error">{{ form.rating.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Поля заголовка и текста -->
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Заголовок отзыва</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="error">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.text.id_for_label }}">Текст отзыва</label>
+                    {{ form.text }}
+                    {% if form.text.errors %}
+                        <div class="error">{{ form.text.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-outline">Отмена</a>
+                    <button type="submit" class="btn btn-secondary">Отправить отзыв</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

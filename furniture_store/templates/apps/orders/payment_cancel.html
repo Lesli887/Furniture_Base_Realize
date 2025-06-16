@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оплата отменена | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/orders/order_created.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="order-created-section">
+    <div class="container">
+        <div class="order-confirmation">
+            <div class="confirmation-icon" style="background: #ffebee; color: #c62828;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+                </svg>
+            </div>
+
+            <h1 class="confirmation-title">Оплата отменена</h1>
+            <p class="confirmation-text">
+                Ваш заказ <strong>№{{ order.id }}</strong> от
+                <strong>{{ order.created_at|date:"d.m.Y H:i" }}</strong> не был оплачен.
+            </p>
+
+            <div class="confirmation-details">
+                <div class="detail-row">
+                    <span>Номер заказа:</span>
+                    <strong>{{ order.id }}</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Сумма к оплате:</span>
+                    <strong>{{ order.total }} ₽</strong>
+                </div>
+                <div class="detail-row">
+                    <span>Статус:</span>
+                    <strong>Ожидает оплаты</strong>
+                </div>
+            </div>
+
+            <p class="confirmation-info">
+                Если это произошло случайно, вы можете повторить оплату.<br>
+                Заказ сохранен в вашей истории и будет ждать оплаты.
+            </p>
+
+            <div class="confirmation-actions">
+                <a href="{% url 'orders:payment_init' order.id %}" class="btn btn-primary">Повторить оплату</a>
+                <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline">Детали заказа</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

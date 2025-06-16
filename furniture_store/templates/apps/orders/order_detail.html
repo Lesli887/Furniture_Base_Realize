@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Заказ №{{ order.id }} | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/orders/order_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="order-detail-section">
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="{% url 'orders:order_list' %}">Мои заказы</a>
+            <span> / </span>
+            <span>Заказ №{{ order.id }}</span>
+        </div>
+
+        <div class="order-header">
+            <h1 class="order-title">Заказ №{{ order.id }}</h1>
+            <div class="order-date">от {{ order.created_at|date:"d.m.Y H:i" }}</div>
+            <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
+        </div>
+
+        <div class="order-summary">
+            <div class="summary-card">
+                <h2 class="summary-title">Информация о заказе</h2>
+
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Статус</div>
+                        <div class="summary-value status-{{ order.status }}">{{ order.get_status_display }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Дата заказа</div>
+                        <div class="summary-value">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Сумма заказа</div>
+                        <div class="summary-value">{{ order.total }} ₽</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Способ оплаты</div>
+                        <div class="summary-value">При получении</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Адрес доставки</div>
+                        <div class="summary-value">{{ order.address }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Телефон</div>
+                        <div class="summary-value">{{ order.phone }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Email</div>
+                        <div class="summary-value">{{ order.email }}</div>
+                    </div>
+
+                    {% if order.comment %}
+                    <div class="summary-item">
+                        <div class="summary-label">Комментарий</div>
+                        <div class="summary-value">{{ order.comment }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="order-items">
+            <h2 class="items-title">Состав заказа</h2>
+
+            <div class="items-list">
+                {% for item in order.items.all %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            {% if item.variant.product.main_image %}
+                                <img src="{{ item.variant.product.main_image.url }}" alt="{{ item.name }}">
+                            {% else %}
+                                <div class="image-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="item-details">
+                            <a href="{% url 'products:product_detail' item.variant.product.slug %}" class="item-name">
+                                {{ item.name }}
+                            </a>
+                            <div class="item-variant">
+                                {% if item.variant.color %}<span>Цвет: {{ item.variant.color.name }}</span>{% endif %}
+                                {% if item.variant.size %}<span>Размер: {{ item.variant.size }}</span>{% endif %}
+                                <span>Артикул: {{ item.sku }}</span>
+                            </div>
+                        </div>
+
+                        <div class="item-quantity">× {{ item.quantity }}</div>
+
+                        <div class="item-price">{{ item.price }} ₽</div>
+
+                        <div class="item-total">{{ item.total }} ₽</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-totals">
+                <div class="total-row">
+                    <span>Сумма за товары:</span>
+                    <span>{{ order.total }} ₽</span>
+                </div>
+                <div class="total-row">
+                    <span>Доставка:</span>
+                    <span>0 ₽</span>
+                </div>
+                <div class="total-total">
+                    <span>Итого к оплате:</span>
+                    <span>{{ order.total }} ₽</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

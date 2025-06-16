@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Коллекции | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/products/collection_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="collection-list-section">
+    <div class="container">
+        <div class="breadcrumbs">
+            <a href="{% url 'products:product_list' %}">Главная</a>
+            <span> / </span>
+            <span>Коллекции</span>
+        </div>
+
+        <h1 class="section-title">Коллекции мебели</h1>
+
+        <div class="collection-grid">
+            {% for collection in collections %}
+            <a href="{% url 'products:collection_detail' collection.slug %}" class="collection-card">
+                {% if collection.image %}
+                <img src="{{ collection.image.url }}" alt="{{ collection.name }}" class="collection-image">
+                {% else %}
+                <div class="collection-image-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                    </svg>
+                </div>
+                {% endif %}
+
+                <div class="collection-info">
+                    <h2 class="collection-name">{{ collection.name }}</h2>
+                    <div class="product-count">{{ collection.products.count }} товаров</div>
+
+                    {% if collection.description %}
+                    <div class="collection-description">
+                        {{ collection.description|truncatechars:100 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

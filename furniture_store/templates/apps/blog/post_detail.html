@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} | Мебельный магазин{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/blog/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    <article class="post-detail">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <div class="post-meta">
+            <span class="post-author">Автор: {{ post.author.username }}</span>
+            <span class="post-date">Опубликовано: {{ post.created_at|date:"d.m.Y" }}</span>
+            <span class="post-updated">Обновлено: {{ post.updated_at|date:"d.m.Y" }}</span>
+        </div>
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
+        {% endif %}
+        <div class="post-content">
+            {{ post.content|safe }}
+        </div>
+        <div class="post-tags">
+            {% for tag in post.tags.all %}
+                <a href="{% url 'blog:tag_detail' tag.slug %}"
+                   class="tag"
+                   data-tag="{{ tag.slug }}">
+                    {{ tag.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </article>
+{% endblock %}
+{% block page_js %}
+    <script src="{% static 'js/apps/blog/blog.js' %}"></script>
+{% endblock %}

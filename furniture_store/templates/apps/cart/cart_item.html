@@ -1,0 +1,50 @@
+<div class="cart-item" data-cart-item="{{ item.id }}">
+    <div class="cart-item__image">
+        {% with variant_images=item.variant.images.all %}
+            {% if variant_images %}
+                <img src="{{ variant_images.0.image.url }}" alt="{{ item.variant.product.name }}">
+            {% elif item.variant.product.main_image %}
+                <img src="{{ item.variant.product.main_image.url }}" alt="{{ item.variant.product.name }}">
+            {% else %}
+                <div class="cart-item__image-placeholder"></div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="cart-item__details">
+        <h4 class="cart-item__name">
+            <a href="{% url 'products:product_detail' slug=item.variant.product.slug %}">
+                {{ item.variant.product.name }}
+            </a>
+        </h4>
+
+        <div class="cart-item__variant">
+            <span class="cart-item__color" style="background-color: {{ item.variant.color.hex_code }}"></span>
+            {{ item.variant.color.name }}
+            {% if item.variant.size %}/ {{ item.variant.size }}{% endif %}
+        </div>
+
+        <div class="cart-item__price">{{ item.variant.price }} ₽</div>
+    </div>
+
+    <div class="cart-item__actions">
+        <div class="cart-item__quantity">
+            <button class="cart-item__quantity-btn" data-action="decrease">-</button>
+            <label>
+                <input type="number"
+                       class="cart-item__quantity-input"
+                       value="{{ item.quantity }}"
+                       min="1"
+                       data-max-stock="{{ item.variant.stock }}"
+                       data-variant-id="{{ item.variant.id }}">
+            </label>
+            <button class="cart-item__quantity-btn" data-action="increase">+</button>
+        </div>
+
+        <div class="cart-item__total">{{ item.total_price }} ₽</div>
+
+        <button class="cart-item__remove" data-action="remove">
+            Удалить
+        </button>
+    </div>
+</div>

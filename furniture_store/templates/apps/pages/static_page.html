@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | FurniStore{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">{{ page_title }}</h1>
+
+            {% if page_title == 'Доставка и оплата' %}
+            <section>
+                <h2>Способы доставки</h2>
+                <p>Мы предлагаем несколько вариантов доставки...</p>
+                <!-- Контент для доставки -->
+            </section>
+            {% elif page_title == 'Гарантия' %}
+            <section>
+                <h2>Гарантийные обязательства</h2>
+                <p>На всю продукцию предоставляется гарантия...</p>
+                <!-- Контент для гарантии -->
+            </section>
+            {% elif page_title == 'Сборка мебели' %}
+            <section>
+                <h2>Услуги сборки</h2>
+                <p>Наши специалисты помогут собрать мебель...</p>
+                <!-- Контент для сборки -->
+            </section>
+            {% elif page_title == 'Контакты' %}
+            <section>
+                <h2>Наши контакты</h2>
+                <p>Адрес: г. Москва, ул. Мебельная, 15</p>
+                <p>Телефон: +7 (495) 123-45-67</p>
+                <p>Email: info@furnistore.ru</p>
+                <!-- Карта и форма обратной связи -->
+            </section>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

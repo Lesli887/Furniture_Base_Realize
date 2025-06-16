@@ -1,0 +1,129 @@
+/* ===== CATEGORY PAGE SPECIFIC STYLES ===== */
+.category-detail-section {
+    /* Наследует все стили из product-list-section */
+}
+
+/* Хлебные крошки */
+.breadcrumbs {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--gray-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 10px 0;
+}
+
+.breadcrumbs a {
+    color: var(--accent-color);
+    transition: var(--transition);
+}
+
+.breadcrumbs a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.breadcrumbs span:last-child {
+    color: var(--dark-color);
+}
+
+/* Заголовок категории */
+.category-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.category-title {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.category-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--dark-color);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Дополнительные стили для фильтров */
+.category-filters {
+    background-color: var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+/* Кастомные стили для пустого состояния */
+.category-empty-products {
+    text-align: center;
+    padding: 50px 20px;
+    background: var(--light-gray);
+    border-radius: var(--border-radius);
+}
+
+.category-empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    color: var(--gray-color);
+}
+
+.category-empty-products h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+/* Адаптивные стили */
+@media (max-width: 992px) {
+    .category-title {
+        font-size: 28px;
+    }
+
+    .category-description {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-header {
+        margin-bottom: 20px;
+    }
+
+    .category-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .category-description {
+        font-size: 14px;
+        padding: 0 15px;
+    }
+
+    .breadcrumbs {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-title {
+        font-size: 22px;
+    }
+
+    .category-empty-products {
+        padding: 30px 15px;
+    }
+
+    .category-empty-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .category-empty-products h3 {
+        font-size: 20px;
+    }
+}

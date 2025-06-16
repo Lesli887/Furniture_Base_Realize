@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Отзывы о {{ product.name }} | Мебельный магазин{% endblock %}
+
+{% block app_css %}
+    <link rel="stylesheet" href="{% static 'css/apps/reviews/reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="reviews-section">
+        <div class="container">
+            <div class="breadcrumbs">
+                <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+                <span> / </span>
+                <span>Отзывы</span>
+            </div>
+
+            <div class="reviews-header">
+                <h1 class="section-title">Отзывы о {{ product.name }}</h1>
+
+                <div class="reviews-summary">
+                    <div class="summary-rating">
+                        <div class="rating-value">{{ product.average_rating|default:"0"|floatformat:1 }}</div>
+                        <div class="rating-stars">
+                            {% with avg_rating=product.average_rating|default:0 %}
+                                {% for i in "12345" %}
+                                    <svg class="star {% if forloop.counter <= avg_rating %}filled{% endif %}"
+                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    </svg>
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <div class="rating-count">{{ reviews.count }} отзывов</div>
+                    </div>
+
+                    {% if not user_review %}
+                        <a href="{% url 'product_reviews:add_review' product.id %}" class="btn btn-secondary">Написать
+                            отзыв</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if reviews %}
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                        {% include "apps/reviews/review_card.html" %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-reviews">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/>
+                        </svg>
+                    </div>
+                    <h3>Пока нет отзывов</h3>
+                    <p>Будьте первым, кто оставит отзыв об этом товаре</p>
+                    <a href="{% url 'product_reviews:add_review' product.id %}" class="btn btn-primary">Написать
+                        отзыв</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

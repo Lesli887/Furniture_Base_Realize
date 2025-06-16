@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Редактирование профиля | FurniStore{% endblock %}
+
+{% block app_css %}
+<link rel="stylesheet" href="{% static 'css/apps/users/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-edit-section">
+    <div class="container">
+        <div class="profile-header">
+            <h1 class="profile-title">Редактирование профиля</h1>
+            <a href="{% url 'users:profile' %}" class="btn btn-outline">
+                <svg width="16" height="16" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+                Отмена
+            </a>
+        </div>
+
+        <div class="profile-edit-container">
+            <!-- Форма редактирования -->
+            <form method="post" enctype="multipart/form-data" class="profile-edit-form">
+                {% csrf_token %}
+
+                <!-- Вывод общих ошибок формы -->
+                {% if user_form.errors or profile_form.errors %}
+                <div class="auth-error">
+                    <p>Пожалуйста, исправьте ошибки:</p>
+                    <ul>
+                        {% for field, errors in user_form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for field, errors in profile_form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="form-columns">
+                    <!-- Левая колонка - основная информация -->
+                    <div class="form-column">
+                        <h2 class="form-section-title">Основная информация</h2>
+
+                        <div class="form-group">
+                            <label for="{{ user_form.first_name.id_for_label }}" class="form-label">Имя</label>
+                            {{ user_form.first_name }}
+                            {% if user_form.first_name.errors %}
+                            <div class="form-error">{{ user_form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ user_form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+                            {{ user_form.last_name }}
+                            {% if user_form.last_name.errors %}
+                            <div class="form-error">{{ user_form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ user_form.email }}
+                            {% if user_form.email.errors %}
+                            <div class="form-error">{{ user_form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ user_form.phone.id_for_label }}" class="form-label">Телефон</label>
+                            {{ user_form.phone }}
+                            {% if user_form.phone.errors %}
+                            <div class="form-error">{{ user_form.phone.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ profile_form.birth_date.id_for_label }}" class="form-label">Дата рождения</label>
+                            {{ profile_form.birth_date }}
+                            {% if profile_form.birth_date.errors %}
+                            <div class="form-error">{{ profile_form.birth_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка - аватар -->
+                    <div class="form-column">
+                        <h2 class="form-section-title">Аватар профиля</h2>
+
+                        <div class="avatar-upload">
+                            <div class="avatar-preview">
+                                {% if user.profile.avatar %}
+                                <img id="avatar-preview" src="{{ user.profile.avatar.url }}" alt="Текущий аватар">
+                                {% else %}
+                                <div id="avatar-preview" class="avatar-placeholder">
+                                    <svg width="60" height="60" fill="currentColor">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="avatar-actions">
+                                <label for="id_avatar" class="btn btn-outline">
+                                    <svg width="16" height="16" fill="currentColor">
+                                        <path d="M19.35 10.04c-.68-2.55-3.06-4.04-5.35-4.04-1.85 0-3.48.99-4.35 2.49-1.87-1.15-4.16-.57-5.35 1.25-1.28 1.97-.59 4.58 1.5 5.78 2.07 1.19 4.76.28 5.85-1.93.19-.38.66-.55 1.05-.36.39.19.55.66.36 1.05-1.48 2.94-5.16 4.11-8.07 2.56-2.91-1.55-3.9-5.26-2.31-8.11 1.59-2.84 5.18-3.8 8.07-2.33.36.18.78.04 1.01-.29.23-.33.18-.78-.11-1.06-1.24-1.18-2.84-1.8-4.5-1.8-3.14 0-6.05 2.31-6.42 5.5-.39 3.39 2.2 6.5 5.5 6.5h12.5c2.48 0 4.5-2.02 4.5-4.5 0-2.34-1.79-4.27-4.07-4.46z"/>
+                                    </svg>
+                                    Выбрать изображение
+                                </label>
+                                {{ profile_form.avatar }}
+
+                                {% if user.profile.avatar %}
+                                <button type="button" id="remove-avatar" class="btn btn-danger">
+                                    <svg width="16" height="16" fill="currentColor">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                    </svg>
+                                    Удалить
+                                </button>
+                                {% endif %}
+                            </div>
+
+                            <div class="avatar-note">
+                                <p>Рекомендуемый размер: 300×300 пикселей</p>
+                                <p>Форматы: JPG, PNG, GIF</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline">Отмена</a>
+                </div>
+            </form>
+
+            <!-- Раздел удаления аккаунта -->
+            <div class="account-deletion">
+                <h2 class="deletion-title">Удаление аккаунта</h2>
+                <p class="deletion-warning">
+                    <svg width="20" height="20" fill="currentColor">
+                        <path d="M12 5.99L19.53 19H4.47L12 5.99M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
+                    </svg>
+                    Внимание! Это действие необратимо. Все ваши данные будут удалены без возможности восстановления.
+                </p>
+                <button type="button" id="delete-account-btn" class="btn btn-danger">
+                    <svg width="16" height="16" fill="currentColor">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                    </svg>
+                    Удалить мой аккаунт
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Модальное окно удаления аккаунта -->
+<div id="delete-account-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Подтверждение удаления аккаунта</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Вы уверены, что хотите удалить свой аккаунт? Это действие:</p>
+            <ul>
+                <li>Немедленно удалит все ваши личные данные</li>
+                <li>Удалит историю заказов и отзывы</li>
+                <li>Невозможно будет отменить</li>
+            </ul>
+
+            <div class="confirmation-checkbox">
+                <label>
+                    <input type="checkbox" id="confirm-deletion">
+                    Я понимаю последствия и хочу удалить свой аккаунт
+                </label>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="confirm-delete-btn" class="btn btn-danger" disabled>Да, удалить аккаунт</button>
+                <button class="btn btn-outline modal-cancel">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Предпросмотр аватара перед загрузкой
+    const avatarInput = document.getElementById('id_avatar');
+    let avatarPreview = document.getElementById('avatar-preview');
+
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Если это placeholder, заменяем его на img
+                    if (avatarPreview.classList.contains('avatar-placeholder')) {
+                        const img = document.createElement('img');
+                        img.id = 'avatar-preview';
+                        img.alt = 'Предпросмотр аватара';
+                        img.src = e.target.result;
+                        avatarPreview.replaceWith(img);
+                        avatarPreview = img;
+                    } else {
+                        avatarPreview.src = e.target.result;
+                    }
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Удаление аватара
+    const removeAvatarBtn = document.getElementById('remove-avatar');
+    if (removeAvatarBtn) {
+        removeAvatarBtn.addEventListener('click', function() {
+            if (confirm('Удалить текущий аватар?')) {
+                // Создаем скрытое поле для удаления аватара
+                const deleteInput = document.createElement('input');
+                deleteInput.type = 'hidden';
+                deleteInput.name = 'avatar-clear';
+                deleteInput.value = '1';
+
+                document.querySelector('.profile-edit-form').appendChild(deleteInput);
+
+                // Заменяем аватар на placeholder
+                const placeholder = document.createElement('div');
+                placeholder.id = 'avatar-preview';
+                placeholder.className = 'avatar-placeholder';
+                placeholder.innerHTML = `
+                    <svg width="60" height="60" fill="currentColor">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                `;
+
+                avatarPreview.replaceWith(placeholder);
+                avatarPreview = placeholder;
+
+                // Скрываем кнопку удаления
+                this.style.display = 'none';
+            }
+        });
+    }
+
+    // Управление модальным окном удаления аккаунта
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const deleteModal = document.getElementById('delete-account-modal');
+    const modalClose = document.querySelector('.modal-close');
+    const modalCancel = document.querySelector('.modal-cancel');
+    const confirmCheckbox = document.getElementById('confirm-deletion');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', function() {
+            deleteModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    // Закрытие модального окна
+    function closeModal() {
+        deleteModal.style.display = 'none';
+        document.body.style.overflow = '';
+        confirmCheckbox.checked = false;
+        confirmDeleteBtn.disabled = true;
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalCancel) modalCancel.addEventListener('click', closeModal);
+
+    // Закрытие при клике вне модального окна
+    window.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+            closeModal();
+        }
+    });
+
+    // Активация кнопки удаления после подтверждения
+    if (confirmCheckbox) {
+        confirmCheckbox.addEventListener('change', function() {
+            confirmDeleteBtn.disabled = !this.checked;
+        });
+    }
+
+    // Обработка подтверждения удаления
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            // Здесь будет запрос на сервер для удаления аккаунта
+            alert('Функция удаления аккаунта будет реализована в бэкенде');
+            closeModal();
+        });
+    }
+});
+</script>
+{% endblock %}
