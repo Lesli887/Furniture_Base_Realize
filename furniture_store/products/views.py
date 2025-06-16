@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Count, Avg
 from django.shortcuts import render, get_object_or_404
+import re
 
 from cart.models import Cart
 from reviews.models import Review
@@ -30,11 +31,12 @@ def product_list(request):
 
     # Применяем фильтры
     if search_query:
+        # Экранируем специальные символы для regex
+        pattern = re.escape(search_query)
         products = products.filter(
-            Q(name__icontains=search_query) |
-            Q(description__icontains=search_query) |
-            Q(category__name__icontains=search_query) |
-            Q(collections__name__icontains=search_query)
+            Q(name__iregex=pattern) |
+            Q(category__name__iregex=pattern) |
+            Q(collections__name__iregex=pattern)
         ).distinct()
 
     if category_slug and category_slug != 'all':
