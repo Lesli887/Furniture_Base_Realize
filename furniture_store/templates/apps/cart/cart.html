@@ -12,119 +12,125 @@
 {% endblock %}
 
 {% block content %}
-<section class="cart-section">
-    <div class="container">
-        <div class="cart-header">
-            <h1 class="cart-title">Ваша корзина</h1>
-            <div class="cart-steps">
-                <div class="step active">Корзина</div>
-                <div class="step">Оформление</div>
-                <div class="step">Подтверждение</div>
-            </div>
-        </div>
-
-        {% if cart.items.all %}
-            <div class="cart-items">
-                <div class="cart-items-header">
-                    <div class="header-product">Товар</div>
-                    <div class="header-price">Цена</div>
-                    <div class="header-quantity">Количество</div>
-                    <div class="header-total">Итого</div>
-                    <div class="header-actions"></div>
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-header">
+                <h1 class="cart-title">Ваша корзина</h1>
+                <div class="cart-steps">
+                    <div class="step active">Корзина</div>
+                    <div class="step">Оформление</div>
+                    <div class="step">Подтверждение</div>
                 </div>
+            </div>
 
-                {% for item in cart.items.all %}
-                    <div class="cart-item" data-item-id="{{ item.id }}">
-                        <div class="item-product">
-                            <div class="item-image">
-                                {% if item.variant.product.main_image %}
-                                    <img src="{{ item.variant.product.main_image.url }}" alt="{{ item.variant.product.name }}">
-                                {% else %}
-                                    <div class="image-placeholder">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
-                                        </svg>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="item-details">
-                                <a href="{% url 'products:product_detail' item.variant.product.slug %}" class="item-name">
-                                    {{ item.variant.product.name }}
-                                </a>
-                                <div class="item-variant">
-                                    {% if item.variant.color %}
-                                        <span>Цвет: {{ item.variant.color.name }}</span>
-                                    {% endif %}
-                                    {% if item.variant.size %}
-                                        <span>Размер: {{ item.variant.size }}</span>
+            {% if cart.items.all %}
+                <div class="cart-items">
+                    <div class="cart-items-header">
+                        <div class="header-product">Товар</div>
+                        <div class="header-price">Цена</div>
+                        <div class="header-quantity">Количество</div>
+                        <div class="header-total">Итого</div>
+                        <div class="header-actions"></div>
+                    </div>
+
+                    {% for item in cart.items.all %}
+                        <div class="cart-item" data-item-id="{{ item.id }}">
+                            <div class="item-product">
+                                <div class="item-image">
+                                    {% if item.variant.product.main_image %}
+                                        <img src="{{ item.variant.product.main_image.url }}"
+                                             alt="{{ item.variant.product.name }}">
+                                    {% else %}
+                                        <div class="image-placeholder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                 fill="currentColor">
+                                                <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                                            </svg>
+                                        </div>
                                     {% endif %}
                                 </div>
-                                <div class="item-sku">Артикул: {{ item.variant.sku }}</div>
+                                <div class="item-details">
+                                    <a href="{% url 'products:product_detail' item.variant.product.slug %}"
+                                       class="item-name">
+                                        {{ item.variant.product.name }}
+                                    </a>
+                                    <div class="item-variant">
+                                        {% if item.variant.color %}
+                                            <span>Цвет: {{ item.variant.color.name }}</span>
+                                        {% endif %}
+                                        {% if item.variant.size %}
+                                            <span>Размер: {{ item.variant.size }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="item-sku">Артикул: {{ item.variant.sku }}</div>
+                                </div>
+                            </div>
+
+                            <div class="item-price">
+                                {{ item.variant.price }} ₽
+                            </div>
+
+                            <div class="item-quantity">
+                                <div class="quantity-control">
+                                    <button class="quantity-btn minus" data-action="decrease">-</button>
+                                    <input type="number" class="quantity-input" value="{{ item.quantity }}"
+                                           min="1"
+                                           max="{{ item.variant.stock }}"
+                                           data-max-stock="{{ item.variant.stock }}">
+                                    <button class="quantity-btn plus" data-action="increase">+</button>
+                                </div>
+                            </div>
+
+                            <div class="item-total">
+                                {{ item.total_price }} ₽
+                            </div>
+
+                            <div class="item-actions">
+                                <button class="btn-remove" title="Удалить">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
+                    {% endfor %}
+                </div>
 
-                        <div class="item-price">
-                            {{ item.variant.price }} ₽
+                <div class="cart-summary">
+                    <div class="summary-card">
+                        <h3 class="summary-title">Итог заказа</h3>
+                        <div class="summary-row">
+                            <span>Товары ({{ cart.total_quantity }})</span>
+                            <span>{{ total }} ₽</span>
                         </div>
-
-                        <div class="item-quantity">
-                            <div class="quantity-control">
-                                <button class="quantity-btn minus" data-action="decrease">-</button>
-                                <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="99">
-                                <button class="quantity-btn plus" data-action="increase">+</button>
-                            </div>
+                        <div class="summary-row">
+                            <span>Доставка</span>
+                            <span>0 ₽</span>
                         </div>
-
-                        <div class="item-total">
-                            {{ item.total_price }} ₽
+                        <div class="summary-total">
+                            <span>Итого к оплате</span>
+                            <span>{{ total }} ₽</span>
                         </div>
-
-                        <div class="item-actions">
-                            <button class="btn-remove" title="Удалить">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                                </svg>
-                            </button>
+                        <a href="{% url 'orders:order_create' %}" class="btn btn-secondary btn-checkout">
+                            Оформить заказ
+                        </a>
+                        <div class="continue-shopping">
+                            <a href="{% url 'products:product_list' %}">← Продолжить покупки</a>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="cart-summary">
-                <div class="summary-card">
-                    <h3 class="summary-title">Итог заказа</h3>
-                    <div class="summary-row">
-                        <span>Товары ({{ cart.total_quantity }})</span>
-                        <span>{{ total }} ₽</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Доставка</span>
-                        <span>0 ₽</span>
-                    </div>
-                    <div class="summary-total">
-                        <span>Итого к оплате</span>
-                        <span>{{ total }} ₽</span>
-                    </div>
-                    <a href="{% url 'orders:order_create' %}" class="btn btn-secondary btn-checkout">
-                        Оформить заказ
-                    </a>
-                    <div class="continue-shopping">
-                        <a href="{% url 'products:product_list' %}">← Продолжить покупки</a>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="empty-cart">
-                <div class="empty-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                    </svg>
+            {% else %}
+                <div class="empty-cart">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3>Ваша корзина пуста</h3>
+                    <p>Добавьте товары, чтобы продолжить покупки</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">Перейти к покупкам</a>
                 </div>
-                <h3>Ваша корзина пуста</h3>
-                <p>Добавьте товары, чтобы продолжить покупки</p>
-                <a href="{% url 'products:product_list' %}" class="btn btn-primary">Перейти к покупкам</a>
-            </div>
-        {% endif %}
-    </div>
-</section>
+            {% endif %}
+        </div>
+    </section>
 {% endblock %}

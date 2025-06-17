@@ -4,21 +4,27 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
             const action = this.dataset.action;
             const input = this.closest('.quantity-control').querySelector('.quantity-input');
+            const maxStock = parseInt(input.dataset.maxStock) || 99;
             let value = parseInt(input.value);
 
             if (action === 'increase') {
-                value += 1;
+                // Проверка остатка на складе
+                if (value < maxStock) {
+                    value += 1;
+                } else {
+                    alert(`Доступно для заказа: ${maxStock}`);
+                    return; // Прерываем выполнение
+                }
             } else if (action === 'decrease' && value > 1) {
                 value -= 1;
             }
 
             input.value = value;
-
-            // Отправка запроса на обновление количества
             const itemId = this.closest('.cart-item').dataset.itemId;
             updateCartItem(itemId, value);
         });
     });
+
 
     // Ручное изменение количества
     document.querySelectorAll('.quantity-input').forEach(input => {
